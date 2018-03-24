@@ -516,6 +516,8 @@ typedef NS_ENUM(NSUInteger, VLCAspectRatio) {
 - (void)setPlaybackPosition:(float)position
 {
     _mediaPlayer.position = position;
+    float duration = self.mediaDuration / 1000.;
+    [self remoteControlService:_remoteControlService setCurrentPlaybackTime:duration * position];
 }
 
 - (void)setSubtitleDelay:(float)subtitleDeleay
