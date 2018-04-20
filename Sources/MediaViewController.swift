@@ -6,6 +6,7 @@
  * $Id$
  *
  * Authors: Carola Nitz <nitz.carola # gmail.com>
+ *          Mike JS. Choi <mkchoi212 # icloud.com>
  *
  * Refer to the COPYING file of the official project for license.
  *****************************************************************************/
@@ -19,6 +20,7 @@ import Foundation
 
 public class VLCMediaViewController: UICollectionViewController, UISearchResultsUpdating, UISearchControllerDelegate {
     private var services: Services
+    private var emptyView: VLCEmptyLibraryView?
     private var mediaDatasourceAndDelegate: MediaDataSourceAndDelegate?
     private var searchController: UISearchController?
     private let searchDataSource = VLCLibrarySearchDisplayDataSource()
@@ -49,6 +51,7 @@ public class VLCMediaViewController: UICollectionViewController, UISearchResults
 
     override public func viewDidLoad() {
         super.viewDidLoad()
+        setupEmptyBackgroundView()
         setupCollectionView()
         setupSearchController()
         setupNavigationBar()
@@ -76,12 +79,13 @@ public class VLCMediaViewController: UICollectionViewController, UISearchResults
 
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        displayEmptyViewIfNeeded()
         services.mediaDataSource.updateContents(forSelection: nil)
         services.mediaDataSource.addAllFolders()
         services.mediaDataSource.addRemainingFiles()
         collectionView?.reloadData()
-
     }
+    
     func setupSearchController() {
         searchController = UISearchController(searchResultsController: nil)
         searchController?.searchResultsUpdater = self
@@ -104,6 +108,19 @@ public class VLCMediaViewController: UICollectionViewController, UISearchResults
 
     func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("SORT", comment: ""), style: .plain, target: self, action: #selector(sort))
+    }
+    
+    func setupEmptyBackgroundView() {
+        emptyView = VLCEmptyLibraryView.init()
+        emptyView?.frame = view.bounds
+    }
+    
+    func displayEmptyViewIfNeeded() {
+        guard let view = emptyView, collectionView?.numberOfItems(inSection: 0) == 0 else {
+            collectionView?.backgroundView = nil
+            return
+        }
+        collectionView?.backgroundView = view
     }
 
     @objc func sort() {

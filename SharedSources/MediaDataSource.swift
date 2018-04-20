@@ -6,6 +6,7 @@
  * $Id$
  *
  * Authors: Carola Nitz <nitz.carola # gmail.com>
+ *          Mike JS. Choi <mkchoi212 # icloud.com>
  *
  * Refer to the COPYING file of the official project for license.
  *****************************************************************************/
