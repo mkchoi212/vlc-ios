@@ -19,12 +19,23 @@ class VLCActionSheetCell: UICollectionViewCell {
         icon.contentMode = .scaleAspectFit
         return icon
     }()
+    
+    let checkmark: UILabel = {
+        let checkmark = UILabel()
+        checkmark.text = "✓"
+        checkmark.font = UIFont.systemFont(ofSize: 15)
+        checkmark.textColor = PresentationTheme.current.colors.orangeUI
+        checkmark.translatesAutoresizingMaskIntoConstraints = false
+        checkmark.isHidden = true
+        return checkmark
+    }()
 
     let name: UILabel = {
         let name = UILabel()
         name.textColor = PresentationTheme.current.colors.cellTextColor
         name.font = UIFont.systemFont(ofSize: 15)
         name.translatesAutoresizingMaskIntoConstraints = false
+        name.setContentHuggingPriority(.defaultLow, for: .horizontal)
         return name
     }()
 
@@ -36,6 +47,18 @@ class VLCActionSheetCell: UICollectionViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                name.textColor = PresentationTheme.current.colors.orangeUI
+                checkmark.isHidden = false
+            } else {
+                name.textColor = PresentationTheme.current.colors.cellTextColor
+                checkmark.isHidden = true
+            }
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,6 +75,7 @@ class VLCActionSheetCell: UICollectionViewCell {
 
         stackView.addArrangedSubview(icon)
         stackView.addArrangedSubview(name)
+        stackView.addArrangedSubview(checkmark)
         addSubview(stackView)
 
         var guide: LayoutAnchorContainer = self
@@ -62,10 +86,7 @@ class VLCActionSheetCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             icon.heightAnchor.constraint(equalToConstant: 25),
             icon.widthAnchor.constraint(equalTo: icon.heightAnchor),
-
-            name.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
-            name.centerYAnchor.constraint(equalTo: stackView.centerYAnchor),
-
+            
             stackView.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 20),
             stackView.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -20),
             stackView.heightAnchor.constraint(equalTo: heightAnchor),
